@@ -1,277 +1,410 @@
+import streamlit as st
+import pandas as pd
+import os
+import random
+from datetime import datetime, timedelta
+
+# ---------------- 页面配置（必须是第一个 Streamlit 命令）----------------
+st.set_page_config(
+    page_title="AutoSales Pro | 汽车销售系统",
+    page_icon="🏆",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
+
+# ---------------- 双语系统 ----------------
+if "language" not in st.session_state:
+    st.session_state.language = "中文"
+
+texts = {
+    "中文": {
+        "title": "🚗 汽车销售管理系统",
+        "subtitle": "2026 专业版",
+        "login_title": "员工登录",
+        "username": "工号 / 用户名",
+        "password": "密码",
+        "login_btn": "🔐 立即登录",
+        "placeholder_user": "请输入 admin",
+        "placeholder_pass": "请输入 123456",
+        "error": "❌ 账号或密码错误！",
+        "champion_title": "🏆 本月销冠荣耀榜",
+        "gold": "🥇 销冠",
+        "silver": "🥈 亚军",
+        "bronze": "🥉 季军",
+        "units": "台",
+        "demo_btn": "🔧 生成演示数据",
+        "demo_success": "✅ 已生成15条测试数据！",
+        "welcome": "欢迎回来",
+        "dashboard": "📊 管理后台",
+        "data_entry": "📝 数据录入",
+        "all_orders": "📋 所有订单",
+        "ranking": "🏆 销冠排行榜",
+        "total_sales": "总销量",
+        "total_profit": "总利润",
+        "avg_price": "平均售价",
+        "save": "💾 保存订单",
+        "seller": "销售员",
+        "customer": "客户姓名",
+        "car_model": "车型",
+        "plate": "车牌号",
+        "cost": "成本价",
+        "price": "售价",
+        "expected_profit": "预计利润",
+        "no_data": "暂无销售数据",
+        "stats_detail": "详细数据排名",
+    },
+    "English": {
+        "title": "🚗 Auto Sales Management",
+        "subtitle": "2026 Professional",
+        "login_title": "Employee Login",
+        "username": "Employee ID",
+        "password": "Password",
+        "login_btn": "🔐 Sign In",
+        "placeholder_user": "Enter admin",
+        "placeholder_pass": "Enter 123456",
+        "error": "❌ Invalid credentials!",
+        "champion_title": "🏆 Sales Champions",
+        "gold": "🥇 Champion",
+        "silver": "🥈 Runner-up",
+        "bronze": "🥉 Third Place",
+        "units": "units",
+        "demo_btn": "🔧 Generate Demo Data",
+        "demo_success": "✅ 15 demo records generated!",
+        "welcome": "Welcome Back",
+        "dashboard": "📊 Dashboard",
+        "data_entry": "📝 Data Entry",
+        "all_orders": "📋 All Orders",
+        "ranking": "🏆 Leaderboard",
+        "total_sales": "Total Sales",
+        "total_profit": "Total Profit",
+        "avg_price": "Average Price",
+        "save": "💾 Save Order",
+        "seller": "Salesperson",
+        "customer": "Customer",
+        "car_model": "Model",
+        "plate": "Plate",
+        "cost": "Cost",
+        "price": "Price",
+        "expected_profit": "Expected Profit",
+        "no_data": "No data yet",
+        "stats_detail": "Detailed Rankings",
+    },
+}
+
+def t(key):
+    return texts[st.session_state.language][key]
+
+# ---------------- 数据管理 ----------------
+DATA_FILE = "sales_data.csv"
+
+def init_data():
+    if not os.path.exists(DATA_FILE):
+        df = pd.DataFrame(columns=["日期", "销售员", "客户姓名", "车牌号", "车型", "成本价", "售价", "利润"])
+        df.to_csv(DATA_FILE, index=False)
+
+def load_data():
+    init_data()
+    return pd.read_csv(DATA_FILE)
+
+def save_data(df):
+    df.to_csv(DATA_FILE, index=False)
+
+def generate_dummy_data():
+    names = ["张伟", "王芳", "李强", "刘洋", "陈静", "杨军", "赵敏", "周杰", "吴磊", "徐丽"]
+    cars = [
+        "Tesla Model 3", "BMW i3", "Audi A4", "Mercedes C200", "Toyota Camry",
+        "Honda Accord", "Ford Mustang", "Porsche 718", "Nio ET5", "Xpeng P7",
+    ]
+    data = []
+    for i in range(15):
+        seller = random.choice(names[:5])
+        if i < 5:
+            seller = random.choice(["张伟", "张伟", "王芳", "王芳", random.choice(names)])
+        car = random.choice(cars)
+        cost = random.randint(150000, 600000)
+        price = cost + random.randint(20000, 80000)
+        data.append({
+            "日期": (datetime.now() - timedelta(days=random.randint(0, 30))).strftime("%Y-%m-%d"),
+            "销售员": seller,
+            "客户姓名": f"客户{random.randint(1,99):02d}",
+            "车牌号": f"京A{random.randint(10000,99999)}",
+            "车型": car,
+            "成本价": cost,
+            "售价": price,
+            "利润": price - cost,
+        })
+    df = pd.DataFrame(data)
+    df.to_csv(DATA_FILE, index=False)
+
+# ---------------- 安全兼容的 UI 样式 ----------------
 def local_css():
     st.markdown("""
     <style>
-        * {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif;
+        /* 基础字体与背景 */
+        html, body, [class*="css"] {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #e0e0e0;
         }
 
+        .stApp {
+            background-color: #0b0f19;
+        }
+
+        /* 隐藏 Streamlit 默认元素 */
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
         header {visibility: hidden;}
 
-        .stApp {
-            background: #0a0a0f;
-            position: relative;
-            overflow: hidden;
+        /* 卡片容器 */
+        .card {
+            background-color: rgba(20, 25, 40, 0.85);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 1rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
 
-        .stApp::before {
-            content: '';
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background:
-                radial-gradient(ellipse at 20% 50%, rgba(236, 72, 153, 0.12) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
-            animation: bgShift 20s ease-in-out infinite;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        @keyframes bgShift {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(2%, -1%) rotate(1deg); }
-            66% { transform: translate(-1%, 1%) rotate(-1deg); }
-        }
-
-        .bento-container {
-            position: relative;
-            z-index: 1;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .glass-bento {
-            background: rgba(20, 20, 35, 0.7);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border-radius: 28px;
-            padding: 32px 28px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .glass-bento::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-        }
-
-        .glass-bento:hover {
-            border-color: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-            transform: translateY(-2px);
-        }
-
-        .hero-title {
-            font-size: clamp(28px, 5vw, 40px);
+        /* 大标题 */
+        .main-title {
+            font-size: 2.2rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #f472b6 0%, #ec4899 25%, #a855f7 50%, #6366f1 75%, #3b82f6 100%);
+            background: linear-gradient(135deg, #f472b6, #a855f7, #6366f1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: gradientFlow 6s ease infinite;
-            letter-spacing: -1px;
-            line-height: 1.2;
+            margin-bottom: 0.2rem;
         }
 
-        @keyframes gradientFlow {
-            0%, 100% { filter: hue-rotate(0deg); }
-            50% { filter: hue-rotate(15deg); }
-        }
-
-        .hero-subtitle {
-            font-size: clamp(12px, 1.5vw, 14px);
-            color: rgba(255, 255, 255, 0.3);
-            font-weight: 500;
-            letter-spacing: 4px;
+        .sub-title {
+            font-size: 0.9rem;
+            color: #8888aa;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            margin-top: 4px;
         }
 
-        .podium-2026 {
+        /* 领奖台 */
+        .podium {
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            gap: 16px;
+            gap: 1rem;
             flex-wrap: wrap;
-            padding: 10px 0;
+            margin: 1.5rem 0;
         }
 
-        .podium-card-2026 {
-            flex: 1 1 110px;
-            max-width: 140px;
-            border-radius: 20px;
-            padding: 24px 14px 18px;
+        .podium-item {
+            background: rgba(30, 35, 50, 0.7);
+            border-radius: 16px;
+            padding: 1.5rem 1rem 1rem;
             text-align: center;
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: default;
+            min-width: 100px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.2s;
         }
 
-        .podium-card-2026:hover {
-            transform: translateY(-10px);
+        .podium-item:hover {
+            transform: translateY(-5px);
         }
 
-        .podium-champion {
-            background: linear-gradient(180deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.1) 100%);
-            border: 1.5px solid rgba(251, 191, 36, 0.4);
-            box-shadow: 0 8px 40px rgba(251, 191, 36, 0.2);
-            padding-top: 32px;
-            padding-bottom: 28px;
-            z-index: 3;
+        .podium-gold {
+            background: linear-gradient(180deg, rgba(255,215,0,0.2) 0%, rgba(255,215,0,0.05) 100%);
+            border-color: rgba(255,215,0,0.4);
+        }
+        .podium-silver {
+            background: linear-gradient(180deg, rgba(192,192,192,0.15) 0%, rgba(192,192,192,0.03) 100%);
+            border-color: rgba(192,192,192,0.3);
+        }
+        .podium-bronze {
+            background: linear-gradient(180deg, rgba(205,127,50,0.15) 0%, rgba(205,127,50,0.03) 100%);
+            border-color: rgba(205,127,50,0.3);
         }
 
-        .podium-runnerup {
-            background: linear-gradient(180deg, rgba(192, 192, 192, 0.15) 0%, rgba(148, 163, 184, 0.1) 100%);
-            border: 1.5px solid rgba(192, 192, 192, 0.25);
-            z-index: 2;
-        }
-
-        .podium-third {
-            background: linear-gradient(180deg, rgba(205, 127, 50, 0.15) 0%, rgba(180, 83, 9, 0.1) 100%);
-            border: 1.5px solid rgba(205, 127, 50, 0.25);
-            z-index: 1;
-        }
-
-        .crown-glow {
-            font-size: 36px;
-            filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.9));
-            animation: crownFloat 3s ease-in-out infinite;
-        }
-
-        @keyframes crownFloat {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-10px) scale(1.1); }
-        }
-
-        .rank-circle {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+        .rank-num {
+            font-size: 2rem;
             font-weight: 800;
-            font-size: 16px;
-            color: white;
-            margin-bottom: 12px;
-        }
-
-        .podium-champion .rank-circle {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            box-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
-        }
-
-        .podium-runnerup .rank-circle {
-            background: linear-gradient(135deg, #cbd5e1, #94a3b8);
-            box-shadow: 0 0 20px rgba(148, 163, 184, 0.3);
-        }
-
-        .podium-third .rank-circle {
-            background: linear-gradient(135deg, #cd7f32, #a0522d);
-            box-shadow: 0 0 20px rgba(205, 127, 50, 0.3);
-        }
-
-        .podium-name {
             display: block;
-            font-size: clamp(13px, 2vw, 16px);
+        }
+
+        .seller-name {
             font-weight: 700;
+            margin: 0.5rem 0;
             color: white;
-            margin: 8px 0 6px;
-            letter-spacing: 0.5px;
         }
 
-        .podium-number {
-            display: block;
-            font-size: clamp(22px, 3.5vw, 30px);
-            font-weight: 900;
-            color: rgba(255, 255, 255, 0.95);
+        .sales-count {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ccc;
         }
 
-        .podium-label {
-            display: block;
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.35);
-            font-weight: 500;
-            margin-top: 4px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .stTextInput > div > div > input {
-            background: rgba(255, 255, 255, 0.04) !important;
-            border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
-            border-radius: 14px !important;
+        /* 输入框与按钮 */
+        .stTextInput>div>div>input {
+            background-color: rgba(255,255,255,0.05) !important;
+            border: 1px solid rgba(255,255,255,0.15) !important;
+            border-radius: 12px !important;
             color: white !important;
-            padding: 14px 18px !important;
-            font-size: 15px !important;
-            transition: all 0.3s ease !important;
+        }
+        .stButton>button {
+            border-radius: 12px !important;
+            font-weight: 600 !important;
+            transition: all 0.2s !important;
+        }
+        .stButton>button:hover {
+            transform: scale(1.02);
         }
 
-        .stTextInput > div > div > input:focus {
-            border-color: #ec4899 !important;
-            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.15), 0 0 30px rgba(236, 72, 153, 0.08) !important;
-            background: rgba(255, 255, 255, 0.06) !important;
-        }
-
-        .stTextInput > div > div > input::placeholder {
-            color: rgba(255, 255, 255, 0.2) !important;
-        }
-
-        .stButton > button {
-            width: 100% !important;
-            border-radius: 16px !important;
-            height: 52px !important;
-            font-weight: 700 !important;
-            font-size: 16px !important;
-            letter-spacing: 0.5px !important;
-            transition: all 0.3s ease !important;
-        }
-
-        @media (max-width: 768px) {
-            .bento-container {
-                grid-template-columns: 1fr;
-                padding: 12px;
-                gap: 14px;
-            }
-            .glass-bento {
-                padding: 24px 18px;
-                border-radius: 22px;
-            }
-            .podium-2026 {
+        /* 响应式 */
+        @media (max-width: 600px) {
+            .podium {
                 flex-direction: column;
                 align-items: center;
-                gap: 12px;
-            }
-            .podium-card-2026 {
-                max-width: 220px;
-                width: 85%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero-title {
-                font-size: 24px;
-            }
-            .glass-bento {
-                padding: 20px 14px;
-                border-radius: 18px;
             }
         }
     </style>
     """, unsafe_allow_html=True)
+
+# ---------------- 销冠排行榜 ----------------
+def show_champions():
+    df = load_data()
+    if df.empty:
+        st.info(t("no_data"))
+        return
+
+    stats = df.groupby("销售员").agg(销量=("车型", "count")).reset_index()
+    stats = stats.sort_values(by="销量", ascending=False)
+    top3 = stats.head(3)
+
+    st.markdown(f"<div style='text-align:center;font-weight:700;margin:1rem 0;'>{t('champion_title')}</div>", unsafe_allow_html=True)
+    st.markdown('<div class="podium">', unsafe_allow_html=True)
+
+    medals = ["podium-gold", "podium-silver", "podium-bronze"]
+    emojis = ["👑", "🥈", "🥉"]
+    for i in range(3):
+        if i < len(top3):
+            row = top3.iloc[i]
+            name = row["销售员"]
+            count = int(row["销量"])
+            st.markdown(f"""
+            <div class="podium-item {medals[i]}">
+                <span class="rank-num">{emojis[i]}</span>
+                <div class="seller-name">{name}</div>
+                <div class="sales-count">{count} <small>{t('units')}</small></div>
+            </div>
+            """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ---------------- 登录页 ----------------
+def login_screen():
+    # 语言切换
+    lang = "EN" if st.session_state.language == "中文" else "中文"
+    if st.button(lang, key="lang"):
+        st.session_state.language = "English" if st.session_state.language == "中文" else "中文"
+        st.rerun()
+
+    col1, col2 = st.columns([1, 1])
+
+    with col1:
+        st.markdown(f"""
+        <div class="card">
+            <div class="main-title">{t('title')}</div>
+            <div class="sub-title">{t('subtitle')}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        username = st.text_input(t("username"), placeholder=t("placeholder_user"))
+        password = st.text_input(t("password"), type="password", placeholder=t("placeholder_pass"))
+
+        if st.button(t("login_btn"), use_container_width=True):
+            if username == "admin" and password == "123456":
+                st.session_state["logged_in"] = True
+                st.rerun()
+            else:
+                st.error(t("error"))
+
+        if st.button(t("demo_btn")):
+            generate_dummy_data()
+            st.success(t("demo_success"))
+            st.rerun()
+
+    with col2:
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        show_champions()
+        st.markdown('</div>', unsafe_allow_html=True)
+
+# ---------------- 后台 ----------------
+def admin_dashboard():
+    st.sidebar.title(t("dashboard"))
+    menu = st.sidebar.radio("", [t("data_entry"), t("all_orders"), t("ranking")])
+
+    if st.sidebar.button("EN" if st.session_state.language == "中文" else "中文"):
+        st.session_state.language = "English" if st.session_state.language == "中文" else "中文"
+        st.rerun()
+    if st.sidebar.button("🚪 退出"):
+        st.session_state["logged_in"] = False
+        st.rerun()
+
+    df = load_data()
+
+    if menu == t("data_entry"):
+        st.header(t("data_entry"))
+        with st.form("form"):
+            c1, c2 = st.columns(2)
+            with c1:
+                seller = st.selectbox(t("seller"), ["张伟","王芳","李强","刘洋","陈静","杨军","赵敏","周杰","吴磊","徐丽"])
+                customer = st.text_input(t("customer"))
+                car_model = st.text_input(t("car_model"))
+            with c2:
+                plate = st.text_input(t("plate"))
+                cost = st.number_input(t("cost"), min_value=0, step=1000)
+                price = st.number_input(t("price"), min_value=0, step=1000)
+            profit = price - cost
+            st.write(f"**{t('expected_profit')}:** ¥{profit:,}")
+            if st.form_submit_button(t("save")):
+                new = {
+                    "日期": datetime.now().strftime("%Y-%m-%d"),
+                    "销售员": seller,
+                    "客户姓名": customer,
+                    "车牌号": plate,
+                    "车型": car_model,
+                    "成本价": cost,
+                    "售价": price,
+                    "利润": profit,
+                }
+                df = pd.concat([df, pd.DataFrame([new])], ignore_index=True)
+                save_data(df)
+                st.success("✅ 录入成功！")
+                st.rerun()
+
+    elif menu == t("all_orders"):
+        st.header(t("all_orders"))
+        if not df.empty:
+            st.dataframe(df, use_container_width=True)
+            c1, c2, c3 = st.columns(3)
+            c1.metric(t("total_sales"), len(df))
+            c2.metric(t("total_profit"), f"¥{df['利润'].sum():,}")
+            c3.metric(t("avg_price"), f"¥{df['售价'].mean():,.0f}")
+        else:
+            st.info(t("no_data"))
+
+    elif menu == t("ranking"):
+        st.header(t("ranking"))
+        show_champions()
+        st.subheader(t("stats_detail"))
+        if not df.empty:
+            stats = df.groupby("销售员").agg(销量=("车型","count"), 总利润=("利润","sum")).sort_values("销量", ascending=False)
+            st.dataframe(stats, use_container_width=True)
+
+# ---------------- 主程序 ----------------
+def main():
+    local_css()
+    init_data()
+    if "logged_in" not in st.session_state:
+        st.session_state["logged_in"] = False
+    if not st.session_state["logged_in"]:
+        login_screen()
+    else:
+        admin_dashboard()
+
+if __name__ == "__main__":
+    main()
