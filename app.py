@@ -1,15 +1,14 @@
+def local_css():
     st.markdown("""
     <style>
-        /* 使用系统原生字体，不加载外部资源 */
         * {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif;
         }
 
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
         header {visibility: hidden;}
 
-        /* 动态弥散光背景 */
         .stApp {
             background: #0a0a0f;
             position: relative;
@@ -38,7 +37,6 @@
             66% { transform: translate(-1%, 1%) rotate(-1deg); }
         }
 
-        /* Bento Box 主容器 */
         .bento-container {
             position: relative;
             z-index: 1;
@@ -50,7 +48,6 @@
             padding: 20px;
         }
 
-        /* 液态玻璃卡片 - 降低 blur 使用 */
         .glass-bento {
             background: rgba(20, 20, 35, 0.7);
             backdrop-filter: blur(40px) saturate(180%);
@@ -58,9 +55,7 @@
             border-radius: 28px;
             padding: 32px 28px;
             border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow:
-                0 8px 32px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
@@ -73,22 +68,15 @@
             left: 0;
             right: 0;
             height: 1px;
-            background: linear-gradient(90deg,
-                transparent,
-                rgba(255, 255, 255, 0.1),
-                transparent
-            );
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
         }
 
         .glass-bento:hover {
             border-color: rgba(255, 255, 255, 0.12);
-            box-shadow:
-                0 12px 48px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
             transform: translateY(-2px);
         }
 
-        /* 电光粉渐变标题 - 不使用背景裁切，改用纯色渐变文字 */
         .hero-title {
             font-size: clamp(28px, 5vw, 40px);
             font-weight: 800;
@@ -99,7 +87,6 @@
             animation: gradientFlow 6s ease infinite;
             letter-spacing: -1px;
             line-height: 1.2;
-            color: transparent; /* 回退确保渐变生效 */
         }
 
         @keyframes gradientFlow {
@@ -116,7 +103,6 @@
             margin-top: 4px;
         }
 
-        /* 领奖台 */
         .podium-2026 {
             display: flex;
             justify-content: center;
@@ -227,7 +213,6 @@
             letter-spacing: 1px;
         }
 
-        /* 输入框液态风格 */
         .stTextInput > div > div > input {
             background: rgba(255, 255, 255, 0.04) !important;
             border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
@@ -248,7 +233,6 @@
             color: rgba(255, 255, 255, 0.2) !important;
         }
 
-        /* Streamlit 按钮 */
         .stButton > button {
             width: 100% !important;
             border-radius: 16px !important;
@@ -259,7 +243,6 @@
             transition: all 0.3s ease !important;
         }
 
-        /* 响应式 */
         @media (max-width: 768px) {
             .bento-container {
                 grid-template-columns: 1fr;
