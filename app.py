@@ -9,7 +9,7 @@ st.set_page_config(
     page_title="AutoSales Pro | 汽车销售系统",
     page_icon="🏆",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="collapsed"
 )
 
 # ---------------- 双语系统 ----------------
@@ -136,7 +136,7 @@ def generate_dummy_data():
     df = pd.DataFrame(data)
     df.to_csv(DATA_FILE, index=False)
 
-# ---------------- 全新 UI 样式 2026 ----------------
+# ---------------- UI 样式 (已修复注释) ----------------
 def local_css():
     st.markdown("""
     <style>
@@ -150,7 +150,7 @@ def local_css():
         footer {visibility: hidden;}
         header {visibility: hidden;}
 
-        /* ===== 动态弥散光背景 ===== */
+        /* 动态弥散光背景 */
         .stApp {
             background: #0a0a0f;
             position: relative;
@@ -164,7 +164,7 @@ def local_css():
             left: -50%;
             width: 200%;
             height: 200%;
-            background: 
+            background:
                 radial-gradient(ellipse at 20% 50%, rgba(236, 72, 153, 0.12) 0%, transparent 50%),
                 radial-gradient(ellipse at 80% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
                 radial-gradient(ellipse at 50% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
@@ -179,7 +179,7 @@ def local_css():
             66% { transform: translate(-1%, 1%) rotate(-1deg); }
         }
 
-        /* ===== Bento Box 主容器 ===== */
+        /* Bento Box 主容器 */
         .bento-container {
             position: relative;
             z-index: 1;
@@ -191,7 +191,7 @@ def local_css():
             padding: 20px;
         }
 
-        /* ===== 液态玻璃卡片 ===== */
+        /* 液态玻璃卡片 */
         .glass-bento {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(40px) saturate(180%);
@@ -199,7 +199,7 @@ def local_css():
             border-radius: 28px;
             padding: 32px 28px;
             border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 
+            box-shadow:
                 0 8px 32px rgba(0, 0, 0, 0.3),
                 inset 0 1px 0 rgba(255, 255, 255, 0.04);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -214,22 +214,22 @@ def local_css():
             left: 0;
             right: 0;
             height: 1px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.1), 
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
                 transparent
             );
         }
 
         .glass-bento:hover {
             border-color: rgba(255, 255, 255, 0.12);
-            box-shadow: 
+            box-shadow:
                 0 12px 48px rgba(0, 0, 0, 0.4),
                 inset 0 1px 0 rgba(255, 255, 255, 0.06);
             transform: translateY(-2px);
         }
 
-        /* ===== 电光粉渐变标题 ===== */
+        /* 电光粉渐变标题 */
         .hero-title {
             font-family: 'Space Grotesk', 'Inter', sans-serif;
             font-size: clamp(28px, 5vw, 40px);
@@ -259,35 +259,7 @@ def local_css():
             margin-top: 4px;
         }
 
-        /* ===== 电光粉强调色按钮 ===== */
-        .btn-electric {
-            display: inline-block;
-            width: 100%;
-            padding: 14px 24px;
-            border-radius: 16px;
-            border: none;
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
-            color: white;
-            background: linear-gradient(135deg, #ec4899 0%, #f472b6 50%, #a855f7 100%);
-            background-size: 200% 200%;
-            animation: gradientFlow 4s ease infinite;
-            box-shadow: 0 8px 32px rgba(236, 72, 153, 0.35);
-            transition: all 0.3s ease;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-electric:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 16px 48px rgba(236, 72, 153, 0.5);
-        }
-
-        .btn-electric:active {
-            transform: translateY(0);
-        }
-
-        /* ===== 领奖台 2026 重新设计 ===== */
+        /* 领奖台 2026 */
         .podium-2026 {
             display: flex;
             justify-content: center;
@@ -316,11 +288,11 @@ def local_css():
 
         /* 冠军 - 电光金 */
         .podium-champion {
-            background: linear-gradient(180deg, 
-                rgba(251, 191, 36, 0.15) 0%, 
+            background: linear-gradient(180deg,
+                rgba(251, 191, 36, 0.15) 0%,
                 rgba(245, 158, 11, 0.06) 100%);
             border: 1.5px solid rgba(251, 191, 36, 0.4);
-            box-shadow: 
+            box-shadow:
                 0 8px 40px rgba(251, 191, 36, 0.2),
                 0 0 80px rgba(251, 191, 36, 0.05);
             padding-top: 32px;
@@ -341,8 +313,8 @@ def local_css():
 
         /* 亚军 - 液态银 */
         .podium-runnerup {
-            background: linear-gradient(180deg, 
-                rgba(192, 192, 192, 0.1) 0%, 
+            background: linear-gradient(180deg,
+                rgba(192, 192, 192, 0.1) 0%,
                 rgba(148, 163, 184, 0.05) 100%);
             border: 1.5px solid rgba(192, 192, 192, 0.25);
             box-shadow: 0 6px 30px rgba(192, 192, 192, 0.08);
@@ -351,8 +323,8 @@ def local_css():
 
         /* 季军 - 琥珀铜 */
         .podium-third {
-            background: linear-gradient(180deg, 
-                rgba(205, 127, 50, 0.1) 0%, 
+            background: linear-gradient(180deg,
+                rgba(205, 127, 50, 0.1) 0%,
                 rgba(180, 83, 9, 0.05) 100%);
             border: 1.5px solid rgba(205, 127, 50, 0.25);
             box-shadow: 0 6px 30px rgba(205, 127, 50, 0.08);
@@ -414,7 +386,7 @@ def local_css():
             letter-spacing: 1px;
         }
 
-        /* ===== 输入框液态风格 ===== */
+        /* 输入框液态风格 */
         .stTextInput > div > div > input {
             background: rgba(255, 255, 255, 0.04) !important;
             border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
@@ -436,7 +408,7 @@ def local_css():
             color: rgba(255, 255, 255, 0.2) !important;
         }
 
-        /* ===== Streamlit 按钮覆盖 ===== */
+        /* Streamlit 按钮覆盖 */
         .stButton > button {
             width: 100% !important;
             border-radius: 16px !important;
@@ -447,30 +419,7 @@ def local_css():
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
 
-        /* 语言切换按钮 */
-        .lang-toggle {
-            position: fixed;
-            top: 16px;
-            right: 20px;
-            z-index: 9999;
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(20px);
-            border-radius: 50px;
-            padding: 8px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .lang-toggle:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: white;
-        }
-
-        /* ===== 响应式 ===== */
+        /* 响应式 */
         @media (max-width: 768px) {
             .bento-container {
                 grid-template-columns: 1fr;
@@ -490,12 +439,6 @@ def local_css():
                 max-width: 220px;
                 width: 85%;
             }
-            .lang-toggle {
-                top: 8px;
-                right: 8px;
-                padding: 6px 14px;
-                font-size: 11px;
-            }
         }
 
         @media (max-width: 480px) {
@@ -510,7 +453,7 @@ def local_css():
     </style>
     """, unsafe_allow_html=True)
 
-# ---------------- 销冠排行榜 2026 版 ----------------
+# ---------------- 销冠排行榜 ----------------
 def show_champions():
     df = load_data()
     if df.empty:
@@ -575,19 +518,17 @@ def show_champions():
 
 # ---------------- 登录页 ----------------
 def login_screen():
-    # 语言切换
+    # 语言切换按钮（置顶）
     lang_label = "EN" if st.session_state.language == "中文" else "中文"
-    st.markdown(f"""
-        <div style="position:fixed; top:16px; right:20px; z-index:9999;">
-    """, unsafe_allow_html=True)
+    st.markdown('<div style="position:fixed; top:16px; right:20px; z-index:9999;">', unsafe_allow_html=True)
     if st.button(lang_label, key="lang_toggle"):
         st.session_state.language = "English" if st.session_state.language == "中文" else "中文"
         st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="bento-container">', unsafe_allow_html=True)
 
-    # 左侧：登录卡片
+    # 左侧登录卡片
     st.markdown(f"""
     <div class="glass-bento">
         <div class="hero-title">{t('title')}</div>
@@ -603,16 +544,16 @@ def login_screen():
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # 登录按钮
-    login_col1, login_col2 = st.columns([3, 1])
-    with login_col1:
+    # 登录按钮行
+    col1, col2 = st.columns([4, 1])
+    with col1:
         if st.button(t("login_btn"), key="login_btn_main", use_container_width=True):
             if username == "admin" and password == "123456":
                 st.session_state["logged_in"] = True
                 st.rerun()
             else:
                 st.error(t("error"))
-    with login_col2:
+    with col2:
         if st.button("⚡", key="demo_btn_quick", help=t("demo_btn"), use_container_width=True):
             generate_dummy_data()
             st.success(t("demo_success"))
@@ -620,7 +561,7 @@ def login_screen():
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # 右侧：销冠榜
+    # 右侧销冠榜
     st.markdown('<div class="glass-bento">', unsafe_allow_html=True)
     show_champions()
     st.markdown("</div>", unsafe_allow_html=True)
@@ -631,7 +572,7 @@ def login_screen():
 def admin_dashboard():
     st.sidebar.markdown(f"""
         <div style="padding: 10px 0;">
-            <span style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 800; 
+            <span style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 800;
                          background: linear-gradient(135deg, #f472b6, #a855f7);
                          -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
                 {t('dashboard')}
@@ -641,7 +582,6 @@ def admin_dashboard():
 
     menu = st.sidebar.radio("", [t("data_entry"), t("all_orders"), t("ranking")], label_visibility="collapsed")
 
-    # 语言切换
     lang_label = "Switch to English" if st.session_state.language == "中文" else "切换到中文"
     if st.sidebar.button(lang_label, use_container_width=True):
         st.session_state.language = "English" if st.session_state.language == "中文" else "中文"
@@ -661,7 +601,7 @@ def admin_dashboard():
         with st.form("sales_form"):
             c1, c2 = st.columns(2)
             with c1:
-                seller = st.selectbox(t("seller"), 
+                seller = st.selectbox(t("seller"),
                     ["张伟", "王芳", "李强", "刘洋", "陈静", "杨军", "赵敏", "周杰", "吴磊", "徐丽"])
                 customer = st.text_input(t("customer"))
                 car_model = st.text_input(t("car_model"))
